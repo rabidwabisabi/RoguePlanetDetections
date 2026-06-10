@@ -1,0 +1,5 @@
+DeviceProcessEvents
+| where FolderPath matches regex @"C:\\Users\\[^\\]+\\AppData\\Local\\Temp\\RP_[A-F0-9\-]+"
+| where ProcessName in ("MsMpEng.exe", "NisSrv.exe", "smartscreen.exe") 
+  or CommandLine has_any ("defender", "malware", "remediation")
+| project TimeGenerated, DeviceName, FolderPath, ProcessName, CommandLine
