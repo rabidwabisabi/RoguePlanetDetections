@@ -1,0 +1,6 @@
+DeviceProcessEvents
+| where ProcessCommandLine has_any ("Mount-DiskImage", "OpenVirtualDisk", "virtdisk", "imagefile")
+  and ProcessCommandLine contains_cs ".iso"
+  and FolderPath contains @"\Temp\"
+| extend ISOPath = extract(@"(C:\\.*?\.iso)", 1, ProcessCommandLine)
+| project TimeGenerated, DeviceName, AccountName, ProcessCommandLine, ISOPath
