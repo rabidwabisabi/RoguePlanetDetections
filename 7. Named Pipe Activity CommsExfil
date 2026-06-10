@@ -1,0 +1,4 @@
+DeviceNetworkEvents
+| where RemoteUrl contains_cs @"\\.\pipe\RP_" 
+  or RemoteUrl contains_cs @"\Device\NamedPipe\RP_"
+| project TimeGenerated, DeviceName, InitiatingProcessName, RemoteUrl
