@@ -1,0 +1,6 @@
+DeviceFileEvents
+| where FolderPath matches regex @"C:\\Users\\[^\\]+\\AppData\\Local\\Temp\\RP_[A-F0-9\-]+"
+  and FileName has ":"  // ADS indicator
+  and ActionType in ("FileModified", "FileCreated")
+| parse FileName with FilePart ":" StreamName
+| project TimeGenerated, DeviceName, FolderPath, FilePart, StreamName, InitiatingProcessName
