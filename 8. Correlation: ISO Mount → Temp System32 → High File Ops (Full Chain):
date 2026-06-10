@@ -1,0 +1,19 @@
+let ISO_Mounts = DeviceProcessEvents
+  | where ProcessCommandLine has_any ("Mount-DiskImage", "OpenVirtualDisk")
+    and ProcessCommandLine contains_cs ".iso"
+  | summarize by DeviceName, AccountName, bin(TimeGenerated, 5m);
+
+let Suspicious_Temps = DeviceFileEvents
+  | where FolderPath matches regex @"C:\\Users\\[^\\]+\\AppData\\Local\\Temp\\RP_[A-F0-9\-]+\\System32"
+  | summarize by DeviceName, bin(TimeGenerated, 5m);
+
+let High_Freq_Ops = DeviceFileEvents
+  | where FolderPath matches regex @"C:\\Users\\[^\\]+\\AppData\\Local\\Temp\\RP_[A-F0-9\-]+"
+  | summarize FileOps = dcount(FileName) by DeviceName, bin(TimeGenerated, 1s)
+  | where FileOps > 50
+  | summarize by DeviceName, bin(TimeGenerated, 5m);
+
+ISO_Mounts
+| join Suspicious_Temps on DeviceName
+| join High_Freq_Ops on DeviceName
+| project TimeGenerated, DeviceName, AccountName
