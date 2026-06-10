@@ -1,0 +1,6 @@
+DeviceFileEvents
+| where FolderPath matches regex @"C:\\Users\\[^\\]+\\AppData\\Local\\Temp\\RP_[A-F0-9\-]+"
+  and ActionType == "FileCreated"
+  and FileName contains_cs "System32"  // Suspicious path under temp
+| where InitiatingProcessName in ("cmd.exe", "powershell.exe", "fsutil.exe")
+| project TimeGenerated, DeviceName, FolderPath, InitiatingProcessName, InitiatingProcessId
