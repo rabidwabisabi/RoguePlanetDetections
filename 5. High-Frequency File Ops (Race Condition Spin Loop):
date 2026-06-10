@@ -1,0 +1,6 @@
+DeviceFileEvents
+| where FolderPath matches regex @"C:\\Users\\[^\\]+\\AppData\\Local\\Temp\\RP_[A-F0-9\-]+"
+| summarize FileOpsCount = dcount(FileName), UniqueActions = dcount(ActionType) 
+  by TimeGenerated = bin(TimeGenerated, 1s), DeviceName, InitiatingProcessName
+| where FileOpsCount > 100  // Abnormal burst
+| project TimeGenerated, DeviceName, InitiatingProcessName, FileOpsCount
