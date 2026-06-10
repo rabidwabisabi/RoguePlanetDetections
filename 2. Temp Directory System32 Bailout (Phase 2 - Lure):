@@ -1,0 +1,4 @@
+DeviceFileEvents
+| where FolderPath matches regex @"C:\\Users\\[^\\]+\\AppData\\Local\\Temp\\RP_[A-F0-9\-]+\\System32"
+| where FileName in ("wermgr.exe", "dwwin.exe", "taskhostw.exe", "svchost.exe")
+| project TimeGenerated, DeviceName, FolderPath, FileName, InitiatingProcessName
